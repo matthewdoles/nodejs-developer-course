@@ -1,7 +1,48 @@
-const getNotes = require("./utils.js");
+const notes = require("./utils.js");
+const yargs = require('yargs');
 
-const msg = getNotes();
+yargs.command({
+    command: 'add',
+    describe: 'Add a new note',
+    builder: {
+        title: {
+            describe: 'Note title',
+            demandOption: true,
+            type: 'string'
+        },
+        body: {
+            describe: 'Note body',
+            demandOption: true,
+            type: 'string'
+        }
+    },
+    handler: function(argv) {
+        console.log('Title: ', argv.title);
+        console.log('Body: ', argv.body);
+        notes.addNote(argv.title, argv.body);
+    }
+})
+yargs.command({
+    command: 'remove',
+    describe: 'Remove a note',
+    handler: function(argv) {
+        console.log('Removing the note!')
+    }
+})
 
-console.log(msg);
+yargs.command({
+    command: 'list',
+    describe: 'List your notes',
+    handler: function() {
+        console.log('Listing out all your notes.')
+    }
+})
+yargs.command({
+    command: 'read',
+    describe: 'Read a note',
+    handler: function() {
+        console.log('Reading your note.')
+    }
+})
 
-console.log('Nodemon watching app.js test');
+yargs.parse();
