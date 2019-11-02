@@ -2,18 +2,38 @@ const yargs = require('yargs');
 
 // Use --help in terminal to disaply more options
 
+// Challenge 2: Configure a body option for add command
+//
+// 1. Setup a body option for the add command
+// 2. Configure a description, make it required, and for it to be a string
+// 3. Log the body value in the handler function
+// 4. Test your work
+
 // add, remove, read, list
 yargs.command({
     command: 'add',
     describe: 'Add a new note',
-    handler: function() {
-        console.log('Adding a new note!')
+    builder: {
+        title: {
+            describe: 'Note title',
+            demandOption: true,
+            type: 'string'
+        },
+        body: {
+            describe: 'Note body',
+            demandOption: true,
+            type: 'string'
+        }
+    },
+    handler: function(argv) {
+        console.log('Title: ', argv.title);
+        console.log('Body: ', argv.body);
     }
 })
 yargs.command({
     command: 'remove',
     describe: 'Remove a note',
-    handler: function() {
+    handler: function(argv) {
         console.log('Removing the note!')
     }
 })
@@ -41,9 +61,4 @@ yargs.command({
 
 // Customize yargs version
 yargs.version('1.1.0');
-console.log(yargs.argv);
-
-
-//console.log(process.argv);
-// versus
-//console.log(yargs.argv);
+yargs.parse(); // sames as console.log(yargs.argv);
