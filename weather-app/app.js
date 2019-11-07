@@ -1,17 +1,43 @@
 const geocode = require('./utils/geocode')
 const forecast = require('./utils/forecast')
+const chalk = require('chalk')
+
+// Challenge: Accept location via command line argument
+//
+// 1. Access the command line argument without yargs
+// 2. Use the string value as the input for geocode
+// 3. Only geocode if a location was provided
+// 4. Test your work with a couple locations
+
+const address = process.argv[2];
+if (!address) {
+    console.log(chalk.red('Please provide a valid address'))
+}
+else {
+    geocode(address, (error, data) => {
+        if (error) {
+            return console.log(chalk.red(error))
+        }
+        forecast(data.latitude, data.longitude, (error, forecastData) => {
+            if (error) {
+                return console.log(chalk.red(error))
+            }
+            console.log(data.location)
+            console.log(forecastData)
+        })
+    })
+}
+
 
 geocode('Tampa', (error, data) => {
-    console.log(data)
-})
-geocode('New York', (error, data) => {
-    console.log(data)
-})
-
-forecast(27.9478, -82.4584, (error, data) => {
-    console.log(data)
-})
-
-forecast(40.7648, -73.9808, (error, data) => {
-    console.log(data)
+    if (error) {
+        return console.log(chalk.red(error))
+    }
+    forecast(data.latitude, data.longitude, (error, forecastData) => {
+        if (error) {
+            return console.log(chalk.red(error))
+        }
+        console.log(data.location)
+        console.log(forecastData)
+    })
 })
