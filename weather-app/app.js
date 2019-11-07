@@ -9,21 +9,28 @@ const chalk = require('chalk')
 // 3. Only geocode if a location was provided
 // 4. Test your work with a couple locations
 
+// Challenge 2: Use both destructuring and property shorthand in weather app
+//
+// 1. Use destructuring in app.js, forecast.js, and geocode.js
+// 2. Use property shorthand in forecast.js and geocode.js
+// 3. Test your work and esure app still works
+
 const address = process.argv[2];
 if (!address) {
     console.log(chalk.red('Please provide a valid address'))
 }
 else {
-    geocode(address, (error, data) => {
+    geocode(address, (error, {location, latitude, longitude}) => {
         if (error) {
             return console.log(chalk.red(error))
         }
-        forecast(data.latitude, data.longitude, (error, forecastData) => {
+        forecast(latitude, longitude, (error, {summary, temperature}) => {
             if (error) {
                 return console.log(chalk.red(error))
             }
-            console.log(data.location)
-            console.log(forecastData)
+            console.log(location)
+            console.log(summary)
+            console.log('Current temperature:', temperature)
         })
     })
 }
