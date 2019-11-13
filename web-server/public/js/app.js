@@ -6,15 +6,15 @@ fetch('http://puzzle.mead.io/puzzle').then((response) => {
     })
 })
 
-// Challenge: fetch weather
-//
-// 1. Setup a call to fetch weather for Tampa
-// 2. Get the parse JSON response
-//      - If error property, print error
-//      - If no error property, print location and forecast
-// 3. Refresh the browser, and test your work
+const weatherForm = document.querySelector('form')
+const search = document.querySelector('input')
 
-fetch('http://localhost:3000/weather?address=tampa').then((response) => {
+weatherForm.addEventListener('submit', (event) => {
+    event.preventDefault()
+    
+    const location = search.value
+
+    fetch('http://localhost:3000/weather?address=' + location).then((response) => {
     response.json().then((data) => {
         if (data.error) {
             console.log(data.error)
@@ -23,4 +23,8 @@ fetch('http://localhost:3000/weather?address=tampa').then((response) => {
             console.log(data)
         }
     })
+})
+
+    console.log(location)
+    console.log('submit')
 })
