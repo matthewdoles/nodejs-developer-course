@@ -54,11 +54,11 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true,  useUnifiedTopology:
             completed: true
         },
         {
-            name: 'Take out trash',
+            description: 'Take out trash',
             completed: false
         },
         {
-            name: 'Do laundry',
+            description: 'Do laundry',
             completed: true
         }
     ], (error, result) => {
