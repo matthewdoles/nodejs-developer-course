@@ -4,6 +4,7 @@ const express = require('express')
 const socketio = require('socket.io')
 const Filter = require('bad-words')
 const { generateMessage, generateLocationMessage } = require('./utils/messages')
+const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users')
 
 const app = express()
 const server = http.createServer(app)
@@ -15,10 +16,15 @@ const publicDirectoryPath = path.join(__dirname, '../public')
 app.use(express.static(publicDirectoryPath))
 
 io.on('connection', (socket) => {
-    socket.on('join', ({ username, room }) => {
-        socket.join(room)
+    socket.on('join', (options, callback) => {
+        const { error, user } =  addUser({ id: socket.id, ...options })
+        if (error) {
+            return callback(error)
+        }
+        socket.join(user.room)
         socket.emit('message', generateMessage('Welcome!'))
-        socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined!`))
+        socket.broadcast.to(user.room).emit('message', generateMessage(`${user.username} has joined!`))
+        callback()
     })
     
     socket.on('sendMessage', (message, callback) => {
@@ -26,17 +32,20 @@ io.on('connection', (socket) => {
         if (filter.isProfane(message)) {
             return callback('Message not sent, profanity found.')
         }
-        io.to('201').emit('message', generateMessage(message))
+        io.emit('message', generateMessage(message))
         callback()
     })
 
     socket.on('sendLocation', (coords, callback) => {
-        io.to('201').emit('locationMessage', generateLocationMessage(coords))
+        io.emit('locationMessage', generateLocationMessage(coords))
         callback()
     })
 
     socket.on('disconnect', () => {
-        io.to('201').emit('message', generateMessage('A user has left!'))
+        const user = removeUser(socket.id)
+        if (user) {
+            io.to(user.room).emit('message', generateMessage(`${user.username} has left!`))
+        }
     })
 })
 
