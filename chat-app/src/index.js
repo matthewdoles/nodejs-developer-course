@@ -15,26 +15,28 @@ const publicDirectoryPath = path.join(__dirname, '../public')
 app.use(express.static(publicDirectoryPath))
 
 io.on('connection', (socket) => {
-    console.log('New WebSocket connection')
-    socket.emit('message', generateMessage('Welcome!'))
-    socket.broadcast.emit('message', generateMessage('A new user has joined!'))
+    socket.on('join', ({ username, room }) => {
+        socket.join(room)
+        socket.emit('message', generateMessage('Welcome!'))
+        socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined!`))
+    })
     
     socket.on('sendMessage', (message, callback) => {
         const filter = new Filter()
         if (filter.isProfane(message)) {
             return callback('Message not sent, profanity found.')
         }
-        io.emit('message', generateMessage(message))
+        io.to('201').emit('message', generateMessage(message))
         callback()
     })
 
     socket.on('sendLocation', (coords, callback) => {
-        io.emit('locationMessage', generateLocationMessage(coords))
+        io.to('201').emit('locationMessage', generateLocationMessage(coords))
         callback()
     })
 
     socket.on('disconnect', () => {
-        io.emit('message', generateMessage('A user has left!'))
+        io.to('201').emit('message', generateMessage('A user has left!'))
     })
 })
 
