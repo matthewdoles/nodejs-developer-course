@@ -4,11 +4,3 @@ Follow along code for [The Complete Node.js Developer Course (3rd Edition)](http
 
 Created by Andrew Mead, Rob Percival
 
-### Projects
-Notes App: No deployment
-
-Weather App: https://doles-weather-platform.herokuapp.com/
-
-Task App: https://doles-task-manager.herokuapp.com/ (API, no frontend)
-
-Chat App: https://doles-chat-app.herokuapp.com/
